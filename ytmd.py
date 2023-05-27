@@ -66,6 +66,18 @@ def authorize():
         if not cookie_secure:
             sys.exit("Empty value provided!")
 
+        print("\n".join(["\n[YTMD] Now get a value of 'Authorization' field from any POST request.",
+                         "To find an 'Authorization' field you need:",
+                         "  1) Open a new tab",
+                         "  2) Open DevTools => Network",
+                         "  3) Go to music.youtube.com while DevTools are open",
+                         "  4) Find a POST request to music.youtube.com and click on it",
+                         "  5) Find a field named 'Authorization' and copy its value"]))
+        
+        auth_data = input("Provide 'Authorization' value: ")
+        if not cookie_secure:
+            sys.exit("Empty value provided!")
+
         cookie = "; ".join([
             "SID="+cookie_sid,
             "HSID="+cookie_hsid,
@@ -77,13 +89,14 @@ def authorize():
 
         with open("cookie.json", "w") as f:
             json.dump({
-                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:108.0) Gecko/20100101 Firefox/108.0",
-                "Accept": "*/*",
-                "Accept-Language": "en-US, ru-RU, en;q=0.75, ru;q=0.5",
-                "Content-Type": "application/json",
-                "X-Goog-AuthUser": "0",
+                "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:108.0) Gecko/20100101 Firefox/108.0",
+                "accept": "*/*",
+                "accept-language": "en-US, ru-RU, en;q=0.75, ru;q=0.5",
+                "authorization": auth_data,
+                "content-type": "application/json",
+                "x-goog-authuser": "0",
                 "x-origin": "https://music.youtube.com",
-                "Cookie": cookie
+                "cookie": cookie
             }, f)
         
         print("Saved! Now you can download your private playlists.")
