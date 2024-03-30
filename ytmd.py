@@ -42,29 +42,45 @@ def authorize():
                          "- in Chrome: Open DevTools => Application => Cookies",
                          "- in Firefox: Open DevTools => Storage => Cookies\n"]))
         
-        cookie_sid = input("Provide SID value: ")
+        cookie_sid = input("Provide a SID value: ")
         if not cookie_sid:
-            sys.exit("Empty value provided!")
+            sys.exit("An empty value was provided!")
 
-        cookie_hsid = input("Provide HSID value: ")
+        cookie_hsid = input("Provide a HSID value: ")
         if not cookie_hsid:
-            sys.exit("Empty value provided!")
+            sys.exit("An empty value was provided!")
 
-        cookie_ssid = input("Provide SSID value: ")
+        cookie_ssid = input("Provide a SSID value: ")
         if not cookie_ssid:
-            sys.exit("Empty value provided!")
+            sys.exit("An empty value was provided!")
 
-        cookie_apisid = input("Provide APISID value: ")
+        cookie_apisid = input("Provide an APISID value: ")
         if not cookie_apisid:
-            sys.exit("Empty value provided!")
+            sys.exit("An empty value was provided!")
 
-        cookie_sapisid = input("Provide SAPISID value: ")
+        cookie_sapisid = input("Provide a SAPISID value: ")
         if not cookie_sapisid:
-            sys.exit("Empty value provided!")
+            sys.exit("An empty value was provided!")
             
-        cookie_secure = input("Provide __Secure-3PAPISID value: ")
-        if not cookie_secure:
-            sys.exit("Empty value provided!")
+        cookie_secure_3papisid = input("Provide a __Secure-3PAPISID value: ")
+        if not cookie_secure_3papisid:
+            sys.exit("An empty value was provided!")
+            
+        cookie_secure_1psid = input("Provide a __Secure-1PSID value: ")
+        if not cookie_secure_1psid:
+            sys.exit("An empty value was provided!")
+        
+        cookie_secure_3psid = input("Provide a __Secure-3PSID value: ")
+        if not cookie_secure_3psid:
+            sys.exit("An empty value was provided!")
+
+        cookie_secure_1psidts = input("Provide a __Secure-1PSIDTS value: ")
+        if not cookie_secure_1psidts:
+            sys.exit("An empty value was provided!")
+        
+        cookie_secure_3psidts = input("Provide a __Secure-3PSIDTS value: ")
+        if not cookie_secure_3psidts:
+            sys.exit("An empty value was provided!")
 
         print("\n".join(["\n[YTMD] Now get a value of 'Authorization' field from any POST request.",
                          "To find an 'Authorization' field you need:",
@@ -74,9 +90,9 @@ def authorize():
                          "  4) Find a POST request to music.youtube.com and click on it",
                          "  5) Find a field named 'Authorization' and copy its value"]))
         
-        auth_data = input("Provide 'Authorization' value: ")
-        if not cookie_secure:
-            sys.exit("Empty value provided!")
+        auth_data = input("Provide an 'Authorization' value: ")
+        if not auth_data:
+            sys.exit("An empty value was provided!")
 
         cookie = "; ".join([
             "SID="+cookie_sid,
@@ -84,7 +100,11 @@ def authorize():
             "SSID="+cookie_ssid,
             "APISID="+cookie_apisid,
             "SAPISID="+cookie_sapisid,
-            "__Secure-3PAPISID="+cookie_secure
+            "__Secure-3PAPISID="+cookie_secure_3papisid,
+            "__Secure-1PSID="+cookie_secure_1psid,
+            "__Secure-3PSID="+cookie_secure_3psid,
+            "__Secure-1PSIDTS="+cookie_secure_1psidts,
+            "__Secure-3PSIDTS="+cookie_secure_3psidts,
         ])
 
         with open("cookie.json", "w") as f:
@@ -113,7 +133,7 @@ def process_track(track_info, track_name):
         ffmpeg
         .input(track_video)                                             # Path to downloaded MP4
         .filter('select', 'gte(n, 1)')                                  # Select the first frame of video stream
-        .output('pipe:', vframes=1, format='image2', vcodec='mjpeg')    # Save it as JPEG to stdout (this will be track cover)
+        .output('pipe:', vframes=1, format='image2', vcodec='mjpeg')    # Save it as JPEG to stdout (this will be a track cover)
         .run(capture_stdout=True)
     )
 
@@ -135,7 +155,7 @@ def process_track(track_info, track_name):
         audio['\xa9nam'] = track_info['title']
 
         if track_info['artists'] is not None:
-            # Resulting string will look like this: Artist1, Artist2, Artist3
+            # Result string will look like this: Artist1, Artist2, Artist3
             # Even if originally it was Artist1, Artist2 & Artist3
             track_artists = ", ".join([track_info['artists'][i]['name'] for i in range(len(track_info['artists']))])
             audio['\xa9ART'] = track_artists
